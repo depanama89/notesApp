@@ -3,11 +3,13 @@ import express, { Request, Response, NextFunction } from "express";
 import notesRoutes from "./routes/routes";
 import NoteModel from "./models/notes";
 import createHttpError, { isHttpError } from "http-errors";
-
+import categoriesRoutes from "./routes/categories";
 const app = express();
 
 app.use(express.json());
 
+
+app.use("/api/categories",categoriesRoutes)
 app.use("/api/notes",notesRoutes );
 // app.use("/api/notes",notesRoutes)
 
