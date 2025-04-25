@@ -1,10 +1,32 @@
-import "dotenv/config"
-import express from "express"
+import "dotenv/config";
+import express, { Request, Response, NextFunction } from "express";
+import notesRoutes from "./routes/routes";
+import NoteModel from "./models/notes";
+import createHttpError, { isHttpError } from "http-errors";
+import categoriesRoutes from "./routes/categories";
+const app = express();
+
+app.use(express.json());
 
 
-const app=express()
+app.use("/api/categories",categoriesRoutes)
+app.use("/api/notes",notesRoutes );
+// app.use("/api/notes",notesRoutes)
 
-app.use(express.json())
+app.use((req, res, next) => {
+  next(createHttpError(404, "Endpoint not found"));
+});
 
+app.use((error: unknown, req: Request, res: Response, next: NextFunction) => {
+  console.log(error);
+  let errorMessage = "An unknown error occurred";
+  let statusCode = 500;
+  if (isHttpError(error)) {
+    statusCode = error.status;
+    errorMessage = error.message;
+  }
 
-export default app
+  res.status(statusCode).json({error:errorMessage})
+});
+
+export default app;
