@@ -4,8 +4,23 @@ import notesRoutes from "./routes/routes";
 import NoteModel from "./models/notes";
 import createHttpError, { isHttpError } from "http-errors";
 import categoriesRoutes from "./routes/categories";
+import cors from "cors";
 const app = express();
 
+const allowedOrigins = ['http://localhost:3000'];
+
+const corsOptions: cors.CorsOptions = {
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Origine non autorisée par CORS'));
+    }
+  },
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions))
 app.use(express.json());
 
 
