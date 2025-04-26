@@ -14,10 +14,9 @@ async function fecthData(url:RequestInfo,init?:RequestInit){
 }
 
 export async function fecthNotes():Promise<Note[]>{
-    if(!process.env.REACT_APP_NETWORK_URL){
-        throw new Error("REACT_APP_NETWORK_URL is not defined")
-    }
-    const response = await fecthData(process.env.REACT_APP_NETWORK_URL,{
+    // const API_URL=process.env.REACT_APP_API_URL
+   
+    const response = await fecthData("/api/notes",{
         method:"GET"
     })
 
