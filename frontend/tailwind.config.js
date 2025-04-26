@@ -38,6 +38,9 @@ module.exports = {
           '"Helvetica Neue"',
           'sans-serif',
         ]
+      },
+      fontSize:{
+        'text-span':'0.7rem',
       }
     },
   },
