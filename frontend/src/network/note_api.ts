@@ -2,7 +2,7 @@ import {Note} from "../models/notes"
 
 // definition de l'interface pour faire passer les parametres à la methode createNote
 
-interface NoteInput{
+export interface NoteInput{
     title:string
     text:string
     category:string

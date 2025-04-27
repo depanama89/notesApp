@@ -42,7 +42,7 @@ const Main = ({isAddNoteModalOpen,onCloseAddNoteModal}:MainProps) => {
     {isAddNoteModalOpen && (
       <div className="fixed inset-0 bg-bg-primary bg-opacity-50 z-40 flex items-center justify-center">
         <div className="bg-primary  max-w-lg w-full shadow  rounded-xl">
-          <AddEditNoteDialog  />
+          <AddEditNoteDialog  onDismiss={onCloseAddNoteModal} onSave={()=>setNotes([])} />
         </div>
       </div>
     )}

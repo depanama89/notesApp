@@ -1,21 +1,42 @@
 import { X } from "lucide-react";
 import React from "react";
+import { Note } from "../../models/notes";
+import { useForm } from "react-hook-form";
+import {NoteInput} from "../../network/note_api"
 
-const AddEditNoteDialog = () => {
-  return (
+interface AddEditNoteDialogProps {
+    noteToEdit?:Note
+    onDismiss:()=>void
+    onSave:(note:Note)=>void
+}
+const AddEditNoteDialog = ({noteToEdit,onDismiss,onSave}:AddEditNoteDialogProps) => {
+
+ const {register,handleSubmit,formState:{errors,isSubmitted}}=useForm<NoteInput>({
+    defaultValues:{
+        title:noteToEdit?.title ||"",
+        text:noteToEdit?.text || "",
+        category:noteToEdit?.category || ""
+    }
+ })
+ function onSubmit(data:NoteInput){ }
+ 
+    return (
     <div className=" w-full h-full    flex flex-col gap-4  px-6 py-3">
       <div className="w-full flex items-center justify-between ">
         <div className="">Add Note</div>
-        <div className="cursor-pointer w-8 h-8 flex items-center justify-center rounded-full hover:bg-bg-primary hover:bg-opacity-50 transition-all duration-200 ease-in-out hover:text-bg-card">
-          <X className="w-4 h-4" />
+        <div className="cursor-pointer w-8 h-8 flex items-center justify-center rounded-full 
+        hover:bg-bg-primary hover:bg-opacity-50 transition-all duration-200 ease-in-out hover:text-bg-card">
+          <X className="w-4 h-4"  onClick={onDismiss}/>
         </div>
       </div>
-      <form className="flex flex-col gap-4 w-full">
+      <form id="addEditNoteForm" onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 w-full">
         <div className="flex flex-col gap-2">
           <label htmlFor="title" className="text-bg-primary">
             Title
           </label>
-          <input className="border border-opacity-50  outline-none rounded-lg w-full p-2 max-w-80" />
+          <input type="text" placeholder="Title"         
+          {...register("title", { required: "Title is required" })}
+           className="border border-opacity-50  outline-none rounded-lg w-full p-2 max-w-80" />
         </div>
         <div className="flex flex-col gap-2">
           <label htmlFor="text" className="text-bg-primary ">
@@ -39,7 +60,7 @@ const AddEditNoteDialog = () => {
         </div>
 
         <div>
-          <button className="px-6 py-2 rounded-xl border border-opacity-50">
+          <button form="addEditNoteForm" className="px-6 py-2 rounded-xl border border-opacity-50">
             Save
           </button>
         </div>
