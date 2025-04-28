@@ -1,8 +1,10 @@
 import { X } from "lucide-react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Note } from "../../models/notes";
 import { useForm } from "react-hook-form";
 import {NoteInput} from "../../network/note_api"
+import { Category as CategoriesModel } from "../../models/categories";
+import * as NotesApi from "../../network/note_api"
 
 interface AddEditNoteDialogProps {
     noteToEdit?:Note
@@ -11,6 +13,8 @@ interface AddEditNoteDialogProps {
 }
 const AddEditNoteDialog = ({noteToEdit,onDismiss,onSave}:AddEditNoteDialogProps) => {
 
+  const [category,setCategory]=useState<CategoriesModel[]>([])
+
  const {register,handleSubmit,formState:{errors,isSubmitted}}=useForm<NoteInput>({
     defaultValues:{
         title:noteToEdit?.title ||"",
@@ -18,7 +22,30 @@ const AddEditNoteDialog = ({noteToEdit,onDismiss,onSave}:AddEditNoteDialogProps)
         category:noteToEdit?.category || ""
     }
  })
- function onSubmit(data:NoteInput){ }
+
+ useEffect(()=>{
+  async function loadCategories(){
+    try {
+      const categories=await NotesApi.fetchCategories()
+      setCategory(categories)
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
+  loadCategories()
+ },[])
+ async function onSubmit(data:NoteInput){
+  try {
+    let responseNote:Note
+
+    responseNote=await NotesApi.createNote(data)
+    onSave(responseNote)
+  } catch (error) {
+    alert(error)
+    
+  }
+  }
  
     return (
     <div className=" w-full h-full    flex flex-col gap-4  px-6 py-3">
@@ -34,33 +61,43 @@ const AddEditNoteDialog = ({noteToEdit,onDismiss,onSave}:AddEditNoteDialogProps)
           <label htmlFor="title" className="text-bg-primary">
             Title
           </label>
+          <div>
           <input type="text" placeholder="Title"         
-          {...register("title", { required: "Title is required" })}
-           className="border border-opacity-50  outline-none rounded-lg w-full p-2 max-w-80" />
+          {...register("title", { required: "Titre obligatoire" })}
+         aria-invalid={errors.title ? "true":"false"}
+           className={`border border-opacity-50  outline-none rounded-lg w-full p-2 max-w-80 ${errors.title ? "border-red" : ""}`} />
+        {errors.title && (
+          <p className="text-red text-sm ">{errors.title.message}</p>)}
+          </div>
         </div>
         <div className="flex flex-col gap-2">
           <label htmlFor="text" className="text-bg-primary ">
             Text
           </label>
-          <textarea className="border border-opacity-50  outline-none rounded-lg w-full p-2 max-w-80"></textarea>
+          <textarea className="border border-opacity-50  outline-none rounded-lg w-full p-2 max-w-80" {...register("text")}></textarea>
         </div>
         <div className="flex flex-col gap-2">
           <label htmlFor="category" className="text-bg-primary">
             Category
           </label>
           {/* <input className="border border-border-color-3 outline-none rounded-lg w-full p-2 max-w-80" /> */}
-          <select
-            name=""
-            id=""
+          <select           
+            
             className="border border-opacity-50  outline-none rounded-lg w-full p-2 max-w-80"
+            {...register("category")}
           >
-            <option value="">Categories</option>
-            <option value="">Ca</option>
+            <option >Selectionnez une categorie</option>
+            {
+              category.map((cat)=>(
+                <option key={cat._id} value={cat.libelle}>{cat.libelle}</option>
+              ))
+            }
+          
           </select>
         </div>
 
         <div>
-          <button form="addEditNoteForm" className="px-6 py-2 rounded-xl border border-opacity-50">
+          <button form="addEditNoteForm" className="px-6 py-2 rounded-xl border border-opacity-50" disabled={isSubmitted}>
             Save
           </button>
         </div>

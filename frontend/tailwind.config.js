@@ -21,6 +21,7 @@ module.exports = {
       "border-color-3":"#81A5D4",
       "border-color-4":"#F4F4F4",
       "text-color-4":"#F4F4F4",
+      "red":"#E30808",
 
     },
     extend: {

@@ -1,4 +1,5 @@
 import {Note} from "../models/notes"
+import {Category} from "../models/categories"
 
 // definition de l'interface pour faire passer les parametres à la methode createNote
 
@@ -6,6 +7,11 @@ export interface NoteInput{
     title:string
     text:string
     category:string
+}
+
+
+export interface CategoryInput{
+    libelle:string
 }
 // declaration de la variablr CONSTANTE API_URL
 const API_URL=process.env.REACT_APP_API_URL
@@ -60,3 +66,12 @@ export async function   updateNote(noteId:string,note:Note):Promise<Note>{
     return response.json()
 }
 
+
+// get API_URL CATEGORY
+
+export async function fetchCategories():Promise<Category[]>{
+    const response=await fecthData(`${API_URL}/api/categories`,{
+        method:"GET"
+    })
+    return response.json()
+}
