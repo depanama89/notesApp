@@ -3,11 +3,6 @@ import {Category} from "../models/categories"
 
 // definition de l'interface pour faire passer les parametres à la methode createNote
 
-export interface NoteInput{
-    title:string
-    text:string
-    category:string
-}
 
 
 export interface CategoryInput{
@@ -39,6 +34,12 @@ export async function fecthNotes():Promise<Note[]>{
     return response.json()
 }
 
+export interface NoteInput{
+    title:string
+    text?:string
+    category:string
+}
+
 
 
 export async function createNote(note:NoteInput):Promise<Note>{
@@ -54,7 +55,7 @@ export async function createNote(note:NoteInput):Promise<Note>{
 }
 
 // update note
-export async function   updateNote(noteId:string,note:Note):Promise<Note>{
+export async function   updateNote(noteId:string,note:NoteInput):Promise<Note>{
     const response= await fecthData(`${API_URL}/api/notes/`+ noteId,{
         method:"PATCH",
         headers:{

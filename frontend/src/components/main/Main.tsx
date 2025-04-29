@@ -3,6 +3,7 @@ import Notes from "../notes/Notes";
 import { Note as NoteModel } from "../../models/notes";
 import * as NotesApi from "../../network/note_api";
 import AddEditNoteDialog from "../addEditNoteDialog/AddEditNoteDialog";
+import { existsSync } from "fs";
 
 interface MainProps{
   isAddNoteModalOpen:boolean
@@ -14,6 +15,8 @@ const Main = ({isAddNoteModalOpen,onCloseAddNoteModal}:MainProps) => {
   const [notes, setNotes] = useState<NoteModel[]>([]);
   // const [ModalAddNoteOpen, setModalAddNoteOpen] = useState(false);
   const [notesLooading, setNotesLoading] = useState(true);
+
+  const [noteToEdit,setNoteToEdit]=useState<NoteModel | null>(null)
 
   useEffect(() => {
     async function loadNotes() {
@@ -33,9 +36,9 @@ const Main = ({isAddNoteModalOpen,onCloseAddNoteModal}:MainProps) => {
     </h1>
     
     {/* Contenu principal avec overflow-x-hidden */}
-    <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 ">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 " >
       {notes.map((note) => (
-        <Notes key={note._id} note={note} />
+        <Notes  note={note} onNoteClicked={setNoteToEdit}  onEditClicked={setNoteToEdit} />
       ))}
     </div>
 
@@ -50,6 +53,25 @@ const Main = ({isAddNoteModalOpen,onCloseAddNoteModal}:MainProps) => {
         </div>
       </div>
     )}
+
+    {
+      noteToEdit && (
+        <div className="fixed inset-0 bg-bg-primary bg-opacity-50 z-40 flex items-center justify-center">
+        <div className="bg-primary  max-w-lg w-full shadow  rounded-xl">
+        <AddEditNoteDialog 
+        noteToEdit={noteToEdit}
+        onDismiss={()=>setNoteToEdit(null)} 
+        onSave={(updateNote)=>{
+          setNotes(notes.map((existingNote)=>
+          existingNote._id===updateNote._id ?updateNote:existingNote)
+          )
+          setNoteToEdit(null)
+        }}/>
+        </div>
+      </div>
+     
+      )
+    }
   </div>
   );
 };
