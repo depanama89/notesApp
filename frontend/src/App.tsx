@@ -4,13 +4,16 @@ import Main from "./components/main/Main";
 import Header from "./components/header/Header";
 
 function App() {
-  const [isAddNoteModalOpen,setIsAddNoteModalOpen]=useState(false)
+  const [isAddNoteModalOpen, setIsAddNoteModalOpen] = useState(false);
   return (
-    <div className="h-screen w-screen bg-primary font-sans flex p-2.5">
-      <Sidebar onAddNoteClick={()=>setIsAddNoteModalOpen(true)} />
+    <div className="h-screen w-screen bg-primary font-sans flex p-2.5 overflow-x-hidden">
+      <Sidebar onAddNoteClick={() => setIsAddNoteModalOpen(true)} />
       <div className="flex flex-col w-full flex-auto  ">
         <Header />
-        <Main isAddNoteModalOpen={isAddNoteModalOpen}  onCloseAddNoteModal={()=>setIsAddNoteModalOpen(false)}/>
+        <Main
+          isAddNoteModalOpen={isAddNoteModalOpen}
+          onCloseAddNoteModal={() => setIsAddNoteModalOpen(false)}
+        />
       </div>
     </div>
   );

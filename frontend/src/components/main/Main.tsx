@@ -5,18 +5,17 @@ import * as NotesApi from "../../network/note_api";
 import AddEditNoteDialog from "../addEditNoteDialog/AddEditNoteDialog";
 import { existsSync } from "fs";
 
-interface MainProps{
-  isAddNoteModalOpen:boolean
-  onCloseAddNoteModal:()=>void
-  
+interface MainProps {
+  isAddNoteModalOpen: boolean;
+  onCloseAddNoteModal: () => void;
 }
 
-const Main = ({isAddNoteModalOpen,onCloseAddNoteModal}:MainProps) => {
+const Main = ({ isAddNoteModalOpen, onCloseAddNoteModal }: MainProps) => {
   const [notes, setNotes] = useState<NoteModel[]>([]);
   // const [ModalAddNoteOpen, setModalAddNoteOpen] = useState(false);
   const [notesLooading, setNotesLoading] = useState(true);
 
-  const [noteToEdit,setNoteToEdit]=useState<NoteModel | null>(null)
+  const [noteToEdit, setNoteToEdit] = useState<NoteModel | null>(null);
 
   useEffect(() => {
     async function loadNotes() {
@@ -31,48 +30,57 @@ const Main = ({isAddNoteModalOpen,onCloseAddNoteModal}:MainProps) => {
   }, []);
   return (
     <div className="p-5 max-lg:p-5 flex flex-col gap-8 relative">
-    <h1 className="text-xl max-lg:text-sm font-bold border-b-2 border-border-color-4 pb-2 w-full">
-      Notes Epinglées
-    </h1>
-    
-    {/* Contenu principal avec overflow-x-hidden */}
-    <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 " >
-      {notes.map((note) => (
-        <Notes  note={note} onNoteClicked={setNoteToEdit}  onEditClicked={setNoteToEdit} />
-      ))}
-    </div>
+      <h1 className="text-xl max-lg:text-sm font-bold border-b-2 border-border-color-4 pb-2 w-full">
+        Notes Epinglées
+      </h1>
 
-    {/* Modal en dehors du conteneur grid */}
-    {isAddNoteModalOpen && (
-      <div className="fixed inset-0 bg-bg-primary bg-opacity-50 z-40 flex items-center justify-center">
-        <div className="bg-primary  max-w-lg w-full shadow  rounded-xl">
-          <AddEditNoteDialog  onDismiss={onCloseAddNoteModal} onSave={(newNote)=>{
-            setNotes([...notes,newNote]);
-            onCloseAddNoteModal()
-          }} />
-        </div>
+      {/* Contenu principal avec overflow-x-hidden */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3  md:grid-cols-2">
+        {notes.map((note) => (
+          <Notes
+            note={note}
+            onNoteClicked={setNoteToEdit}
+            onEditClicked={setNoteToEdit}
+          />
+        ))}
       </div>
-    )}
 
-    {
-      noteToEdit && (
+      {/* Modal en dehors du conteneur grid */}
+      {isAddNoteModalOpen && (
         <div className="fixed inset-0 bg-bg-primary bg-opacity-50 z-40 flex items-center justify-center">
-        <div className="bg-primary  max-w-lg w-full shadow  rounded-xl">
-        <AddEditNoteDialog 
-        noteToEdit={noteToEdit}
-        onDismiss={()=>setNoteToEdit(null)} 
-        onSave={(updateNote)=>{
-          setNotes(notes.map((existingNote)=>
-          existingNote._id===updateNote._id ?updateNote:existingNote)
-          )
-          setNoteToEdit(null)
-        }}/>
+          <div className="bg-primary  max-w-lg w-full shadow  rounded-xl">
+            <AddEditNoteDialog
+              onDismiss={onCloseAddNoteModal}
+              onSave={(newNote) => {
+                setNotes([...notes, newNote]);
+                onCloseAddNoteModal();
+              }}
+            />
+          </div>
         </div>
-      </div>
-     
-      )
-    }
-  </div>
+      )}
+
+      {noteToEdit && (
+        <div className="fixed inset-0 bg-bg-primary bg-opacity-50 z-40 flex items-center justify-center">
+          <div className="bg-primary  max-w-lg w-full shadow  rounded-xl">
+            <AddEditNoteDialog
+              noteToEdit={noteToEdit}
+              onDismiss={() => setNoteToEdit(null)}
+              onSave={(updateNote) => {
+                setNotes(
+                  notes.map((existingNote) =>
+                    existingNote._id === updateNote._id
+                      ? updateNote
+                      : existingNote
+                  )
+                );
+                setNoteToEdit(null);
+              }}
+            />
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 
